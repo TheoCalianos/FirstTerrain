@@ -8,7 +8,46 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class CustomTerrain : MonoBehaviour
 {
+    public Vector2 randomHeightRange = new Vector2(0,0.1f);
+    public Texture2D heightMapImage;
+    public Vector3 heightMapScale = new Vector3(1, 1, 1);
 
+    public Terrain terrain;
+    public TerrainData terrainData;
+
+    public void RandomTerrain()
+    {
+      float[,] heightMap = terrainData.GetHeights(0,0,terrainData.heightmapWidth, terrainData.heightmapHeight);
+
+      for (int x=0; x < terrainData.heightmapWidth; x++)
+      {
+        for(int y = 0; y < terrainData.heightmapHeight; y++)
+        {
+          heightMap[x, y] += UnityEngine.Random.Range(randomHeightRange.x, randomHeightRange.y);
+        }
+      }
+      terrainData.SetHeights(0,0, heightMap);
+    }
+    public void LoadTexture()
+    {
+      float[,] heightMap;
+      heightMap = new float [terrainData.heightmapWidth, terrainData.heightmapHeight];
+
+      for (int x=0; x < terrainData.heightmapWidth; x++)
+      {
+        for(int z = 0; z < terrainData.heightmapHeight; z++)
+        {
+          heightMap[x, z] = heightMapImage.GetPixel((int)(x * heightMapScale.x),(int)(z * heightMapScale.z)).grayscale * heightMapScale.y;
+        }
+      }
+      terrainData.SetHeights(0,0, heightMap);
+    }
+    void OnEnable()
+    {
+      Debug.Log("initialising Terrain Data");
+      terrain = this.GetComponent<Terrain>();
+      terrainData = Terrain.activeTerrain.terrainData;
+    }
     void Awake()
     {
       SerializedObject tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
@@ -22,7 +61,20 @@ public class CustomTerrain : MonoBehaviour
 
       this.gameObject.tag = "Terrain";
     }
+    public void ResetTerrain()
+    {
+      float[,] heightMap;
+      heightMap = new float [terrainData.heightmapWidth, terrainData.heightmapHeight];
 
+      for (int x=0; x < terrainData.heightmapWidth; x++)
+      {
+        for(int y = 0; y < terrainData.heightmapHeight; y++)
+        {
+          heightMap[x, y] = 0;
+        }
+      }
+      terrainData.SetHeights(0,0, heightMap);
+    }
     void AddTag(SerializedProperty tagsProp,string newTag)
     {
       bool found = false;

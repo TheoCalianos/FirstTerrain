@@ -303,6 +303,9 @@
  <Reference Include="UnityEditor.UWP.Extensions">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.1f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.UWP.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="EditorGUITable">
+ <HintPath>C:/Users/Theo calianos/Desktop/unity projects/FirstTerrain/Assets/GUITable/Code/EditorGUITable.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEditor.Advertisements">
  <HintPath>C:/Users/Theo calianos/Desktop/unity projects/FirstTerrain/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
  </Reference>
@@ -317,9 +320,6 @@
  </Reference>
  <Reference Include="UnityEditor.Purchasing">
  <HintPath>C:/Users/Theo calianos/Desktop/unity projects/FirstTerrain/Library/PackageCache/com.unity.purchasing@2.0.6/Editor/UnityEditor.Purchasing.dll</HintPath>
- </Reference>
- <Reference Include="EditorGUITable">
- <HintPath>C:/Users/Theo calianos/Desktop/unity projects/FirstTerrain/Assets/GUITable/Code/EditorGUITable.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.1f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
