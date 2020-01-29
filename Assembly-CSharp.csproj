@@ -63,6 +63,7 @@
      <Compile Include="Assets\GUITable\Examples\Scripts\PropertyAttributeExample.cs" />
      <Compile Include="Assets\GUITable\Examples\Scripts\SimpleExample.cs" />
      <Compile Include="Assets\Scripts\CustomTerrain.cs" />
+     <Compile Include="Assets\Scripts\Utils.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>C:/Users/Theo calianos/Desktop/unity projects/FirstTerrain/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>

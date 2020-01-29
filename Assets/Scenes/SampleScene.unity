@@ -307,6 +307,13 @@ MonoBehaviour:
   randomHeightRange: {x: 0, y: 0.1}
   heightMapImage: {fileID: 2800000, guid: 5079ac04fe08b0a4f833d56f946e0c3a, type: 3}
   heightMapScale: {x: 2, y: 0.5, z: 2}
+  perlinXScale: 0.002
+  perlinYScale: 0.003
+  perlinOffsetX: 6923
+  perlinOffsetY: 8200
+  perlinOctaves: 3
+  perlinHeightScale: 0.472
+  perlinPersistance: 1.9
   terrain: {fileID: 934238532}
   terrainData: {fileID: 15600000, guid: 14ecf15eae706314bb6bf1fdccd71b2d, type: 2}
 --- !u!1 &963194225
@@ -385,8 +392,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0.04568699, y: 0.93611443, z: -0.13259536, w: -0.322523}
-  m_LocalPosition: {x: 514.7728, y: 119.271355, z: 554.63196}
+  m_LocalRotation: {x: -0.08615321, y: 0.8761498, z: -0.44253513, w: -0.17059267}
+  m_LocalPosition: {x: 488.89148, y: 677.2682, z: 534.6348}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
