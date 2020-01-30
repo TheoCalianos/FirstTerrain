@@ -314,6 +314,32 @@ MonoBehaviour:
   perlinOctaves: 3
   perlinHeightScale: 0.472
   perlinPersistance: 1.9
+  perlinParameters:
+  - mperlinXScale: 0.01
+    mperlinYScale: 0.01
+    mperlinOctaves: 3
+    mperlinHeightScale: 0.09
+    mperlinPersistance: 8
+    mperlinOffsetX: 0
+    mperlinOffsetY: 0
+    remove: 0
+  - mperlinXScale: 0.001
+    mperlinYScale: 0.001
+    mperlinOctaves: 3
+    mperlinHeightScale: 1
+    mperlinPersistance: 8
+    mperlinOffsetX: 0
+    mperlinOffsetY: 0
+    remove: 0
+  - mperlinXScale: 0.0005
+    mperlinYScale: 0.0005
+    mperlinOctaves: 3
+    mperlinHeightScale: 0.09
+    mperlinPersistance: 8
+    mperlinOffsetX: 0
+    mperlinOffsetY: 0
+    remove: 0
+  resetTerrain: 1
   terrain: {fileID: 934238532}
   terrainData: {fileID: 15600000, guid: 14ecf15eae706314bb6bf1fdccd71b2d, type: 2}
 --- !u!1 &963194225
