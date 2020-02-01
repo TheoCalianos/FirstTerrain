@@ -21,11 +21,14 @@ public class CustomTerrainEditor : Editor
     SerializedProperty perlinPersistance;
     SerializedProperty perlinHeightScale;
     SerializedProperty resetTerrain;
+    SerializedProperty fallOff;
+    SerializedProperty dropOff;
 
     bool showRandom = false;
     bool showLoadHeights = false;
     bool showPerlinNoise = false;
     bool showMultiplePerlins = false;
+    bool showVoronoi = false;
 
     GUITableState perlinParametersTable;
     SerializedProperty perlinParameters;
@@ -43,7 +46,8 @@ public class CustomTerrainEditor : Editor
       perlinPersistance = serializedObject.FindProperty("perlinPersistance");
       perlinHeightScale = serializedObject.FindProperty("perlinHeightScale");
       resetTerrain = serializedObject.FindProperty("resetTerrain");
-
+      fallOff = serializedObject.FindProperty("fallOff");
+      dropOff = serializedObject.FindProperty("dropOff");
       perlinParametersTable = new GUITableState("perlinParametersTable");
       perlinParameters = serializedObject.FindProperty("perlinParameters");
 
@@ -78,7 +82,6 @@ public class CustomTerrainEditor : Editor
           terrain.LoadTexture();
         }
       }
-
       showPerlinNoise = EditorGUILayout.Foldout(showPerlinNoise , "Perlin Noise");
       if(showPerlinNoise)
       {
@@ -118,6 +121,19 @@ public class CustomTerrainEditor : Editor
           terrain.MultiplePerlinTerrain();
         }
       }
+      showVoronoi = EditorGUILayout.Foldout(showVoronoi, "Voronoi");
+      if(showVoronoi)
+      {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PropertyField(fallOff);
+        EditorGUILayout.PropertyField(dropOff);
+        EditorGUILayout.EndHorizontal();
+        if(GUILayout.Button("Voronoi"))
+        {
+          terrain.Voronoi();
+        }
+      }
+
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
       if(GUILayout.Button("Reset"))
       {
