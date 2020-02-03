@@ -21,8 +21,12 @@ public class CustomTerrainEditor : Editor
     SerializedProperty perlinPersistance;
     SerializedProperty perlinHeightScale;
     SerializedProperty resetTerrain;
-    SerializedProperty fallOff;
-    SerializedProperty dropOff;
+    SerializedProperty voronoifallOff;
+    SerializedProperty voronoidropOff;
+    SerializedProperty voronoimaxHeight;
+    SerializedProperty voronoimaxWidth;
+    SerializedProperty voronoipeakCount;
+    SerializedProperty voronoiType;
 
     bool showRandom = false;
     bool showLoadHeights = false;
@@ -46,8 +50,12 @@ public class CustomTerrainEditor : Editor
       perlinPersistance = serializedObject.FindProperty("perlinPersistance");
       perlinHeightScale = serializedObject.FindProperty("perlinHeightScale");
       resetTerrain = serializedObject.FindProperty("resetTerrain");
-      fallOff = serializedObject.FindProperty("fallOff");
-      dropOff = serializedObject.FindProperty("dropOff");
+      voronoifallOff = serializedObject.FindProperty("voronoifallOff");
+      voronoidropOff = serializedObject.FindProperty("voronoidropOff");
+      voronoimaxHeight = serializedObject.FindProperty("voronoimaxHeight");
+      voronoimaxWidth = serializedObject.FindProperty("voronoimaxWidth");
+      voronoipeakCount = serializedObject.FindProperty("voronoipeakCount");
+      voronoiType = serializedObject.FindProperty("voronoiType");
       perlinParametersTable = new GUITableState("perlinParametersTable");
       perlinParameters = serializedObject.FindProperty("perlinParameters");
 
@@ -124,10 +132,12 @@ public class CustomTerrainEditor : Editor
       showVoronoi = EditorGUILayout.Foldout(showVoronoi, "Voronoi");
       if(showVoronoi)
       {
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.PropertyField(fallOff);
-        EditorGUILayout.PropertyField(dropOff);
-        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.IntSlider(voronoipeakCount, 1, 10, new GUIContent("Peak Count"));
+        EditorGUILayout.Slider(voronoifallOff , 0, 10, new GUIContent("fall Off"));
+        EditorGUILayout.Slider(voronoidropOff , 0, 10, new GUIContent("drop Off"));
+        EditorGUILayout.Slider(voronoimaxHeight ,0, 1, new GUIContent("max Height"));
+        EditorGUILayout.Slider(voronoimaxWidth ,0, 1, new GUIContent("max Width"));
+        EditorGUILayout.PropertyField(voronoiType);
         if(GUILayout.Button("Voronoi"))
         {
           terrain.Voronoi();

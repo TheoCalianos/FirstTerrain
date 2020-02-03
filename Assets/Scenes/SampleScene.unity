@@ -312,10 +312,14 @@ MonoBehaviour:
   perlinOffsetX: 6923
   perlinOffsetY: 8200
   perlinOctaves: 3
-  perlinHeightScale: 0.472
+  perlinHeightScale: 0.106
   perlinPersistance: 1.9
-  fallOff: 0.2
-  dropOff: 0.6
+  voronoifallOff: 0.2
+  voronoidropOff: 0.6
+  voronoimaxHeight: 0.012
+  voronoimaxWidth: 0.118
+  voronoipeakCount: 1
+  voronoiType: 3
   perlinParameters:
   - mperlinXScale: 0.01
     mperlinYScale: 0.01
