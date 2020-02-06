@@ -25,7 +25,7 @@ public class CustomTerrain : MonoBehaviour
     public float voronoimaxHeight = 0.1f;
     public float voronoimaxWidth = .05f;
     public int voronoipeakCount = 5;
-    public enum VoronoiType {Linear = 0, Power = 1, Combined = 2, SinPow = 3}
+    public enum VoronoiType {Linear = 0, Power = 1, SinPow = 2, Combined = 3}
     public VoronoiType voronoiType = VoronoiType.Combined;
 
     //
@@ -97,7 +97,8 @@ public class CustomTerrain : MonoBehaviour
               }
               else if(voronoiType == VoronoiType.SinPow)
               {
-                h = peak.y - Mathf.Pow(distanceToPeak*3, voronoifallOff) - Mathf.Sin(distanceToPeak*2*Mathf.PI)/voronoidropOff;
+                h = peak.y - Mathf.Pow(distanceToPeak*3, voronoifallOff) -
+                            Mathf.Sin(distanceToPeak*2*Mathf.PI)/voronoidropOff;
               }
               else
               {
