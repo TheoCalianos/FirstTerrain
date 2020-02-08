@@ -319,7 +319,11 @@ MonoBehaviour:
   voronoimaxHeight: 0.321
   voronoimaxWidth: 0.205
   voronoipeakCount: 3
-  voronoiType: 2
+  voronoiType: 3
+  midPointHeightMax: -1.5
+  midPointHeightMin: 1.5
+  midPointDampener: 8
+  midPointRoughness: 2
   perlinParameters:
   - mperlinXScale: 0.01
     mperlinYScale: 0.01

@@ -27,12 +27,17 @@ public class CustomTerrainEditor : Editor
     SerializedProperty voronoimaxWidth;
     SerializedProperty voronoipeakCount;
     SerializedProperty voronoiType;
+    SerializedProperty midPointHeightMax;
+    SerializedProperty midPointHeightMin;
+    SerializedProperty midPointRoughness;
+    SerializedProperty midPointDampener;
 
     bool showRandom = false;
     bool showLoadHeights = false;
     bool showPerlinNoise = false;
     bool showMultiplePerlins = false;
     bool showVoronoi = false;
+    bool midPointShow = false;
 
     GUITableState perlinParametersTable;
     SerializedProperty perlinParameters;
@@ -58,6 +63,10 @@ public class CustomTerrainEditor : Editor
       voronoiType = serializedObject.FindProperty("voronoiType");
       perlinParametersTable = new GUITableState("perlinParametersTable");
       perlinParameters = serializedObject.FindProperty("perlinParameters");
+      midPointHeightMax = serializedObject.FindProperty("midPointHeightMax");
+      midPointHeightMin = serializedObject.FindProperty("midPointHeightMin");
+      midPointRoughness = serializedObject.FindProperty("midPointRoughness");
+      midPointDampener = serializedObject.FindProperty("midPointDampener");
 
     }
     public override void OnInspectorGUI()
@@ -143,7 +152,18 @@ public class CustomTerrainEditor : Editor
           terrain.Voronoi();
         }
       }
-
+      midPointShow = EditorGUILayout.Foldout(midPointShow, "Midpoint Displacemnet");
+      if(midPointShow)
+      {
+        EditorGUILayout.PropertyField(midPointHeightMin);
+        EditorGUILayout.PropertyField(midPointHeightMax);
+        EditorGUILayout.PropertyField(midPointRoughness);
+        EditorGUILayout.PropertyField(midPointDampener);
+        if(GUILayout.Button("MPD"))
+        {
+          terrain.MidPointDisplacement();
+        }
+      }
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
       if(GUILayout.Button("Reset"))
       {

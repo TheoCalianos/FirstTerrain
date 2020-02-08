@@ -25,8 +25,13 @@ public class CustomTerrain : MonoBehaviour
     public float voronoimaxHeight = 0.1f;
     public float voronoimaxWidth = .05f;
     public int voronoipeakCount = 5;
-    public enum VoronoiType {Linear = 0, Power = 1, SinPow = 2, Combined = 3}
+    public enum VoronoiType {Linear = 0, Power = 1, SinPow = 2, LogPow=3, Combined = 4}
     public VoronoiType voronoiType = VoronoiType.Combined;
+
+    public float midPointHeightMax = -2f;
+    public float midPointHeightMin = 2f;
+    public float midPointDampener = 2.0f;
+    public float midPointRoughness = 2.0f;
 
     //
     [System.Serializable]
@@ -60,6 +65,107 @@ public class CustomTerrain : MonoBehaviour
       {
         return new float[terrainData.heightmapWidth, terrainData.heightmapHeight];
       }
+    }
+    public void MidPointDisplacement ()
+    {
+      float[,] heightMap = GetHeightMap();
+      int width = terrainData.heightmapWidth - 1;//like power of 2.
+      int squareSize = width;
+      float heightMax = midPointHeightMax;
+      float heightMin = midPointHeightMin;
+      float heightDampener = (float)Mathf.Pow(midPointDampener, -1 * midPointRoughness);
+
+      int cornerX;
+      int cornerY;
+      int midX;
+      int midY;
+      int pmidXL,pmidXR, pmidYU, pmidYD;
+
+      /*heightMap[0,0] = UnityEngine.Random.Range(0f, 0.2f);
+      heightMap[0, terrainData.heightmapHeight - 2] = UnityEngine.Random.Range(0f, 0.2f);
+      heightMap[terrainData.heightmapWidth-2, 0] = UnityEngine.Random.Range(0f, 0.2f);
+      heightMap[terrainData.heightmapWidth-2,  terrainData.heightmapHeight-2] = UnityEngine.Random.Range(0f, 0.2f);*/
+      while(squareSize > 0)
+      {
+        for(int x = 0; x < width; x += squareSize)
+        {
+          for(int y = 0; y < width; y += squareSize)
+          {
+            cornerX = (x + squareSize);
+            cornerY = (y + squareSize);
+            midX = (int)(x  + squareSize / 2.0f);
+            midY = (int)(y + squareSize / 2.0f);
+            heightMap[midX,midY] = (float)((heightMap[x,y] +
+                                            heightMap[cornerX , y] +
+                                            heightMap[x, cornerY] +
+                                            heightMap[cornerX,cornerY]) / 4.0f +
+                                            UnityEngine.Random.Range(heightMin, heightMax));
+            }
+          }
+          for(int x = 0; x < width; x += squareSize)
+          {
+            for(int y = 0; y < width; y += squareSize)
+            {
+              cornerX = (x + squareSize);
+              cornerY = (y + squareSize);
+
+              midX = (int)(x + squareSize / 2.0f);
+              midY = (int)(y + squareSize / 2.0f);
+
+              pmidXR = (int)(midX + squareSize);
+              pmidYU = (int)(midY + squareSize);
+              pmidXL = (int)(midX - squareSize);
+              pmidYD = (int)(midY - squareSize);
+
+              if(pmidXR > squareSize)
+              {
+                pmidXR = (pmidXR/2)-(squareSize/3);
+              }
+              if(pmidYU > squareSize)
+              {
+                pmidYU = (pmidYU/2)-(squareSize/3);
+              }
+              if(pmidXL <= 0)
+              {
+                pmidXL = (pmidXL/2)+(squareSize/3);
+              }
+              if(pmidYD <= 0)
+              {
+                pmidYD = (pmidYD/2)+(squareSize/3);
+              }
+              //if(pmidXL <= 0 || pmidYD <= 0 || pmidXR >= width - 1 || pmidYU >= width - 1 ) continue;
+              //Debug.Log("pmidXR " + pmidXR + " pmidYU " + pmidYU  + " pmidXL " + pmidXL + " pmidYD " + pmidYD );
+              //calc the square value for the bottom side
+              heightMap[midX, y] =  (float)((heightMap[midX,midY] +
+                                              heightMap[x , y] +
+                                              heightMap[midX, pmidYD] +
+                                              heightMap[cornerX, y]) / 4.0f +
+                                              UnityEngine.Random.Range(heightMin, heightMax));
+               //calc the square value for the top side
+               heightMap[midX, cornerY] =  (float)((heightMap[midX,midY] +
+                                             heightMap[x , cornerY] +
+                                             heightMap[midX, pmidYU] +
+                                             heightMap[cornerX, cornerY]) / 4.0f +
+                                             UnityEngine.Random.Range(heightMin, heightMax));
+              //calc the square value for the left side
+              heightMap[x, midY] =  (float)((heightMap[midX,midY] +
+                                            heightMap[x , y] +
+                                            heightMap[pmidXL, midY] +
+                                            heightMap[x, cornerY]) / 4.0f +
+                                            UnityEngine.Random.Range(heightMin, heightMax));
+              //calc the square value for the right side
+              heightMap[cornerX, midY] =  (float)((heightMap[midX,midY] +
+                                            heightMap[cornerX , y] +
+                                            heightMap[pmidXR, midY] +
+                                            heightMap[cornerX, cornerY]) / 4.0f +
+                                            UnityEngine.Random.Range(heightMin, heightMax));
+            }
+          }
+          squareSize = (int) (squareSize/2.0f);
+          heightMin *= heightDampener;
+          heightMax *= heightDampener;
+      }
+      terrainData.SetHeights(0, 0, heightMap);
     }
     public void Voronoi()
     {
@@ -99,6 +205,10 @@ public class CustomTerrain : MonoBehaviour
               {
                 h = peak.y - Mathf.Pow(distanceToPeak*3, voronoifallOff) -
                             Mathf.Sin(distanceToPeak*2*Mathf.PI)/voronoidropOff;
+              }
+              else if(voronoiType == VoronoiType.LogPow)
+              {
+                h = peak.y - Mathf.Pow(distanceToPeak*3, voronoifallOff) -  distanceToPeak* Mathf.Log(Mathf.Exp(1), voronoidropOff);
               }
               else
               {
