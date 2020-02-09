@@ -33,6 +33,8 @@ public class CustomTerrain : MonoBehaviour
     public float midPointDampener = 2.0f;
     public float midPointRoughness = 2.0f;
 
+    public int smoothCount = 1;
+
     //
     [System.Serializable]
     public class PerlinParameters
@@ -65,6 +67,51 @@ public class CustomTerrain : MonoBehaviour
       {
         return new float[terrainData.heightmapWidth, terrainData.heightmapHeight];
       }
+    }
+    List<Vector2> Getneighbours(Vector2 pos, int width, int height)
+    {
+      List<Vector2> neighbours = new List<Vector2>();
+      for(int y = -1; y < 2; y++)
+      {
+        for(int x = -1; x < 2; x++)
+        {
+          if(!(x == 0 && y == 0))
+          {
+            Vector2 nPos = new Vector2(Mathf.Clamp(pos.x + x, 0, width-1),Mathf.Clamp(pos.y + y, 0,height-1));
+            if(!neighbours.Contains(nPos))
+            {
+              neighbours.Add(nPos);
+            }
+          }
+        }
+      }
+      return neighbours;
+    }
+    public void Smooth()
+    {
+      float[,] heightMap =  terrainData.GetHeights(0, 0, terrainData.heightmapWidth, terrainData.heightmapHeight);
+      float smoothProgress = 0;
+      EditorUtility.DisplayProgressBar("smoothing Terrain", "Progress", smoothProgress);
+      for(int c =0; c < smoothCount; c++)
+      {
+        for (int y=0; y < terrainData.heightmapWidth; y++)
+        {
+          for(int x = 0; x < terrainData.heightmapHeight; x++)
+          {
+            float avgHeight = heightMap[x,y];
+            List<Vector2> neighbours = Getneighbours(new Vector2(x,y), terrainData.heightmapWidth, terrainData.heightmapHeight);
+            foreach(Vector2 n in neighbours)
+            {
+              avgHeight += heightMap[(int)n.x,(int)n.y];
+            }
+            heightMap[x, y] = avgHeight/ ((float)neighbours.Count + 1);
+          }
+        }
+        smoothProgress++;
+        EditorUtility.DisplayProgressBar("smoothing Terrain", "Progress", smoothProgress/smoothCount);
+      }
+      terrainData.SetHeights(0,0, heightMap);
+      EditorUtility.ClearProgressBar();
     }
     public void MidPointDisplacement ()
     {
@@ -119,19 +166,19 @@ public class CustomTerrain : MonoBehaviour
 
               if(pmidXR > squareSize)
               {
-                pmidXR = (pmidXR/2)-(squareSize/3);
+                pmidXR = (pmidXR/2)-(squareSize*2/3);
               }
               if(pmidYU > squareSize)
               {
-                pmidYU = (pmidYU/2)-(squareSize/3);
+                pmidYU = (pmidYU/2)-(squareSize*2/3);
               }
               if(pmidXL <= 0)
               {
-                pmidXL = (pmidXL/2)+(squareSize/3);
+                pmidXL = (pmidXL/2)+(squareSize*2/3);
               }
               if(pmidYD <= 0)
               {
-                pmidYD = (pmidYD/2)+(squareSize/3);
+                pmidYD = (pmidYD/2)+(squareSize*2/3);
               }
               //if(pmidXL <= 0 || pmidYD <= 0 || pmidXR >= width - 1 || pmidYU >= width - 1 ) continue;
               //Debug.Log("pmidXR " + pmidXR + " pmidYU " + pmidYU  + " pmidXL " + pmidXL + " pmidYD " + pmidYD );

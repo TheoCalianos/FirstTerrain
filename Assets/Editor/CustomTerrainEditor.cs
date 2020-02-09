@@ -31,7 +31,9 @@ public class CustomTerrainEditor : Editor
     SerializedProperty midPointHeightMin;
     SerializedProperty midPointRoughness;
     SerializedProperty midPointDampener;
+    SerializedProperty smoothCount;
 
+    bool showSmooth = false;
     bool showRandom = false;
     bool showLoadHeights = false;
     bool showPerlinNoise = false;
@@ -67,6 +69,7 @@ public class CustomTerrainEditor : Editor
       midPointHeightMin = serializedObject.FindProperty("midPointHeightMin");
       midPointRoughness = serializedObject.FindProperty("midPointRoughness");
       midPointDampener = serializedObject.FindProperty("midPointDampener");
+      smoothCount = serializedObject.FindProperty("smoothCount");
 
     }
     public override void OnInspectorGUI()
@@ -162,6 +165,15 @@ public class CustomTerrainEditor : Editor
         if(GUILayout.Button("MPD"))
         {
           terrain.MidPointDisplacement();
+        }
+      }
+      showSmooth = EditorGUILayout.Foldout(showSmooth, "Smooth");
+      if(showSmooth)
+      {
+        EditorGUILayout.IntSlider(smoothCount, 0, 10, new GUIContent("Smooth Count"));
+        if(GUILayout.Button("Smooth"))
+        {
+          terrain.Smooth();
         }
       }
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);

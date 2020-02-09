@@ -322,8 +322,9 @@ MonoBehaviour:
   voronoiType: 3
   midPointHeightMax: -1.5
   midPointHeightMin: 1.5
-  midPointDampener: 8
+  midPointDampener: 2
   midPointRoughness: 2
+  smoothCount: 7
   perlinParameters:
   - mperlinXScale: 0.01
     mperlinYScale: 0.01
@@ -349,7 +350,7 @@ MonoBehaviour:
     mperlinOffsetX: 0
     mperlinOffsetY: 0
     remove: 0
-  resetTerrain: 1
+  resetTerrain: 0
   terrain: {fileID: 934238532}
   terrainData: {fileID: 15600000, guid: 14ecf15eae706314bb6bf1fdccd71b2d, type: 2}
 --- !u!1 &963194225
