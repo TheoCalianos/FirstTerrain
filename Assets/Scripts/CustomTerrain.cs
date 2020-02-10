@@ -33,6 +33,30 @@ public class CustomTerrain : MonoBehaviour
     public float midPointDampener = 2.0f;
     public float midPointRoughness = 2.0f;
 
+    public float splatOffset = 0.1f;
+    public float splatNoiseXscale = 0.01f;
+    public float splatNoiseYscale = 0.01f;
+    public float splatNoisescaler = 0.2f;
+
+    [System.Serializable]
+    public class SplatHeights
+    {
+      public Texture2D texture = null;
+      public float minHeight = 0.1f;
+      public float maxHeight = 0.2f;
+      public Vector2 tileOffset = new Vector2(0,0);
+      public Vector2 tileSize = new Vector2(0,0);
+      public float tsplatOffset = 0.01f;
+      public float tsplatNoiseXscale =  0.01f;
+      public float tsplatNoiseYscale =  0.01f;
+      public float tsplatNoisescaler = 0.01f;
+      public bool remove = false;
+    }
+    public List<SplatHeights> splatHeights = new List<SplatHeights>()
+    {
+      new SplatHeights()
+    };
+
     public int smoothCount = 1;
 
     //
@@ -86,6 +110,95 @@ public class CustomTerrain : MonoBehaviour
         }
       }
       return neighbours;
+    }
+    public void AddNewSplatHeights()
+    {
+      SplatHeights newSplatHeight = new SplatHeights();
+      newSplatHeight.tsplatOffset = splatOffset;
+      newSplatHeight.tsplatNoiseXscale = splatNoiseXscale;
+      newSplatHeight.tsplatNoiseYscale = splatNoiseYscale;
+      newSplatHeight.tsplatNoisescaler = splatNoisescaler;
+      splatHeights.Add(newSplatHeight);
+    }
+    public void RemoveSplatHeight()
+    {
+      List<SplatHeights> keptsplatHeights = new List<SplatHeights>();
+      for (int i = 0; i < splatHeights.Count; i++) {
+        if (!splatHeights[i].remove)
+        {
+          keptsplatHeights.Add(splatHeights[i]);
+        }
+      }
+      if (keptsplatHeights.Count == 0)
+      {
+        keptsplatHeights.Add(splatHeights[0]);
+      }
+      splatHeights = keptsplatHeights;
+    }
+    public void SplatMaps()
+    {
+      TerrainLayer[] newSplatProtoType;
+      newSplatProtoType = new TerrainLayer[splatHeights.Count];
+      int spindex = 0;
+      foreach (SplatHeights sh in splatHeights)
+      {
+        newSplatProtoType[spindex] = new TerrainLayer();
+           newSplatProtoType[spindex].diffuseTexture = sh.texture;
+           newSplatProtoType[spindex].tileOffset = sh.tileOffset;
+           newSplatProtoType[spindex].tileSize = sh.tileSize;
+           newSplatProtoType[spindex].diffuseTexture.Apply(true);
+           string path = "Assets/New Terrain Layer " + spindex + ".terrainLayer";
+           AssetDatabase.CreateAsset(newSplatProtoType[spindex], path);
+           spindex++;
+           Selection.activeObject = this.gameObject;
+      }
+      terrainData.terrainLayers = newSplatProtoType;
+      float[,] heightMap = terrainData.GetHeights(0,0, terrainData.heightmapWidth,
+                                                        terrainData.heightmapHeight);
+      float[,,] splatmapData = new float[terrainData.alphamapWidth,terrainData.alphamapHeight,terrainData.alphamapLayers];
+      for(int y = 0; y < terrainData.alphamapHeight; y++)
+      {
+        for(int x = 0; x < terrainData.alphamapWidth; x++)
+        {
+          float[] splat = new float[terrainData.alphamapLayers];
+          for(int i = 0; i < splatHeights.Count; i++)
+          {
+            float noise = Mathf.PerlinNoise(x*splatHeights[i].tsplatNoiseXscale,y*splatHeights[i].tsplatNoiseYscale) * splatHeights[i].tsplatNoisescaler;
+            float offset = splatHeights[i].tsplatOffset + noise;
+            float thisHeightStart = splatHeights[i].minHeight - offset;
+            float thisHeightStop = splatHeights[i].maxHeight + offset;
+            if((heightMap[x,y] >= thisHeightStart && heightMap[x,y] <= thisHeightStop))
+            {
+              splat[i] = 1;
+            }
+          }
+          NormalizeVector(splat);
+          {
+            for(int j = 0; j < splatHeights.Count; j++)
+            {
+              splatmapData[x, y, j]=splat[j];
+            }
+          }
+        }
+        terrainData.SetAlphamaps(0,0, splatmapData);
+      }
+      void NormalizeVector(float[] v)
+      {
+        float total =0;
+        for(int i = 0; i < v.Length; i++)
+        {
+          total += v[i];
+
+        }
+        for(int i = 0; i < v.Length; i++)
+        {
+          v[i] /= total;
+        }
+      }
+
+       heightMap = terrainData.GetHeights(0,0, terrainData.heightmapWidth, terrainData.heightmapHeight);
+
+       splatmapData = new float[terrainData.alphamapWidth, terrainData.alphamapHeight, terrainData.alphamapLayers];
     }
     public void Smooth()
     {

@@ -32,7 +32,12 @@ public class CustomTerrainEditor : Editor
     SerializedProperty midPointRoughness;
     SerializedProperty midPointDampener;
     SerializedProperty smoothCount;
+    SerializedProperty splatOffset;
+    SerializedProperty splatNoiseXscale;
+    SerializedProperty splatNoiseYscale;
+    SerializedProperty splatNoisescaler;
 
+    bool showSplatMap = false;
     bool showSmooth = false;
     bool showRandom = false;
     bool showLoadHeights = false;
@@ -40,6 +45,9 @@ public class CustomTerrainEditor : Editor
     bool showMultiplePerlins = false;
     bool showVoronoi = false;
     bool midPointShow = false;
+
+    GUITableState splatMapTable;
+    SerializedProperty splatHeights;
 
     GUITableState perlinParametersTable;
     SerializedProperty perlinParameters;
@@ -70,13 +78,22 @@ public class CustomTerrainEditor : Editor
       midPointRoughness = serializedObject.FindProperty("midPointRoughness");
       midPointDampener = serializedObject.FindProperty("midPointDampener");
       smoothCount = serializedObject.FindProperty("smoothCount");
+      splatMapTable = new GUITableState("splatMapTable");
+      splatHeights = serializedObject.FindProperty("splatHeights");
+      splatOffset = serializedObject.FindProperty("splatOffset");
+      splatNoiseXscale = serializedObject.FindProperty("splatNoiseXscale");
+      splatNoiseYscale = serializedObject.FindProperty("splatNoiseYscale");
+      splatNoisescaler = serializedObject.FindProperty("splatNoisescaler");
 
     }
+    Vector2 scrollPos;
     public override void OnInspectorGUI()
     {
       serializedObject.Update();
       CustomTerrain terrain = (CustomTerrain) target;
-
+      Rect r = EditorGUILayout.BeginVertical();
+      scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Width(r.width), GUILayout.Height(r.height));
+      EditorGUI.indentLevel++;
       EditorGUILayout.PropertyField(resetTerrain);
 
       showRandom = EditorGUILayout.Foldout(showRandom, "Random");
@@ -176,12 +193,40 @@ public class CustomTerrainEditor : Editor
           terrain.Smooth();
         }
       }
+      showSplatMap = EditorGUILayout.Foldout(showSplatMap, "Splat Map");
+      if(showSplatMap)
+      {
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        GUILayout.Label("Splat Map", EditorStyles.boldLabel);
+        EditorGUILayout.Slider(splatOffset , 0, .1f, new GUIContent("Offset"));
+        EditorGUILayout.Slider(splatNoiseXscale , 0.001f, 1, new GUIContent("Noise X scale"));
+        EditorGUILayout.Slider(splatNoiseYscale , 0.001f, 1, new GUIContent("Noise Y scale"));
+        EditorGUILayout.Slider(splatNoisescaler ,0, 1, new GUIContent("Noise scaler"));
+        splatMapTable = GUITableLayout.DrawTable(splatMapTable, serializedObject.FindProperty("splatHeights"));
+        //splatMapTable = GUITableLayout.DrawTable(splatMapTable, splatHeights);
+        GUILayout.Space(20);
+        EditorGUILayout.BeginHorizontal();
+        if(GUILayout.Button("+"))
+        {
+          terrain.AddNewSplatHeights();
+        }
+        if(GUILayout.Button("-"))
+        {
+          terrain.RemoveSplatHeight();
+        }
+        EditorGUILayout.EndHorizontal();
+        if(GUILayout.Button("Apply Splatmaps"))
+        {
+          terrain.SplatMaps();
+        }
+      }
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
       if(GUILayout.Button("Reset"))
       {
         terrain.ResetTerrain();
       }
-
+      EditorGUILayout.EndScrollView();
+      EditorGUILayout.EndVertical();
       serializedObject.ApplyModifiedProperties();
     }
     // Start is called before the first frame update

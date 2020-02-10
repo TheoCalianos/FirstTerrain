@@ -324,6 +324,41 @@ MonoBehaviour:
   midPointHeightMin: 1.5
   midPointDampener: 2
   midPointRoughness: 2
+  splatOffset: 0.051
+  splatNoiseXscale: 0.32
+  splatNoiseYscale: 0.42
+  splatNoisescaler: 0.2
+  splatHeights:
+  - texture: {fileID: 2800000, guid: 004b783a095f74e7196db2e1a3a6c2d8, type: 3}
+    minHeight: 0.4
+    maxHeight: 0.8
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}
+    tsplatOffset: 0.051
+    tsplatNoiseXscale: 0.32
+    tsplatNoiseYscale: 0.42
+    tsplatNoisescaler: 0.2
+    remove: 0
+  - texture: {fileID: 2800000, guid: 1368cbe84e5ef458787070c6ea7ae2ee, type: 3}
+    minHeight: 0.2
+    maxHeight: 0.4
+    tileOffset: {x: 0, y: 1}
+    tileSize: {x: 0, y: 0}
+    tsplatOffset: 0.051
+    tsplatNoiseXscale: 0.32
+    tsplatNoiseYscale: 0.42
+    tsplatNoisescaler: 0.05
+    remove: 0
+  - texture: {fileID: 2800000, guid: 69930cb68b9e44a93877a4fd343b0e89, type: 3}
+    minHeight: 0
+    maxHeight: 0.1
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 0, y: 0}
+    tsplatOffset: 0.051
+    tsplatNoiseXscale: 0.32
+    tsplatNoiseYscale: 0.42
+    tsplatNoisescaler: 0.2
+    remove: 0
   smoothCount: 7
   perlinParameters:
   - mperlinXScale: 0.01
@@ -429,8 +464,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0.08615321, y: 0.8761498, z: -0.44253513, w: -0.17059267}
-  m_LocalPosition: {x: 488.89148, y: 677.2682, z: 534.6348}
+  m_LocalRotation: {x: 0.24115446, y: -0.545617, z: 0.16783871, w: 0.7848419}
+  m_LocalPosition: {x: 596.7921, y: 397.50696, z: 91.68824}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
