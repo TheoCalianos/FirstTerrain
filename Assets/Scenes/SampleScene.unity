@@ -332,6 +332,8 @@ MonoBehaviour:
   - texture: {fileID: 2800000, guid: 004b783a095f74e7196db2e1a3a6c2d8, type: 3}
     minHeight: 0.4
     maxHeight: 0.8
+    minSlope: 0
+    maxSlope: 90
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 10, y: 10}
     tsplatOffset: 0.051
@@ -342,6 +344,8 @@ MonoBehaviour:
   - texture: {fileID: 2800000, guid: 1368cbe84e5ef458787070c6ea7ae2ee, type: 3}
     minHeight: 0.2
     maxHeight: 0.4
+    minSlope: 0
+    maxSlope: 80
     tileOffset: {x: 0, y: 1}
     tileSize: {x: 0, y: 0}
     tsplatOffset: 0.051
@@ -352,6 +356,8 @@ MonoBehaviour:
   - texture: {fileID: 2800000, guid: 69930cb68b9e44a93877a4fd343b0e89, type: 3}
     minHeight: 0
     maxHeight: 0.1
+    minSlope: 0
+    maxSlope: 85
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 0, y: 0}
     tsplatOffset: 0.051
@@ -359,7 +365,7 @@ MonoBehaviour:
     tsplatNoiseYscale: 0.42
     tsplatNoisescaler: 0.2
     remove: 0
-  smoothCount: 7
+  smoothCount: 10
   perlinParameters:
   - mperlinXScale: 0.01
     mperlinYScale: 0.01
@@ -372,7 +378,7 @@ MonoBehaviour:
   - mperlinXScale: 0.001
     mperlinYScale: 0.001
     mperlinOctaves: 3
-    mperlinHeightScale: 1
+    mperlinHeightScale: 0.15
     mperlinPersistance: 8
     mperlinOffsetX: 0
     mperlinOffsetY: 0
