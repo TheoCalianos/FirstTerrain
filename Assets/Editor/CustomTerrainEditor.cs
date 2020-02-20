@@ -37,6 +37,11 @@ public class CustomTerrainEditor : Editor
     SerializedProperty splatNoiseYscale;
     SerializedProperty splatNoisescaler;
 
+    float HeightestPiontInTerrian;
+
+    Texture2D hmTexture;
+
+    bool showHeights = false;
     bool showSplatMap = false;
     bool showSmooth = false;
     bool showRandom = false;
@@ -46,6 +51,7 @@ public class CustomTerrainEditor : Editor
     bool showVoronoi = false;
     bool midPointShow = false;
 
+    float sHeightestPiontInTerrian;
     GUITableState splatMapTable;
     SerializedProperty splatHeights;
 
@@ -84,6 +90,9 @@ public class CustomTerrainEditor : Editor
       splatNoiseXscale = serializedObject.FindProperty("splatNoiseXscale");
       splatNoiseYscale = serializedObject.FindProperty("splatNoiseYscale");
       splatNoisescaler = serializedObject.FindProperty("splatNoisescaler");
+
+      hmTexture = new Texture2D(513, 513, TextureFormat.ARGB32, false);
+
 
     }
     Vector2 scrollPos;
@@ -198,6 +207,8 @@ public class CustomTerrainEditor : Editor
       {
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         GUILayout.Label("Splat Map", EditorStyles.boldLabel);
+        GUILayout.Label("Max Height Of Terrain", EditorStyles.boldLabel);
+        EditorGUILayout.FloatField(HeightestPiontInTerrian);
         EditorGUILayout.Slider(splatOffset , 0, .1f, new GUIContent("Offset"));
         EditorGUILayout.Slider(splatNoiseXscale , 0.001f, 1, new GUIContent("Noise X scale"));
         EditorGUILayout.Slider(splatNoiseYscale , 0.001f, 1, new GUIContent("Noise Y scale"));
@@ -219,6 +230,39 @@ public class CustomTerrainEditor : Editor
         {
           terrain.SplatMaps();
         }
+      }
+      showHeights = EditorGUILayout.Foldout(showHeights, "Height Map");
+      if(showHeights)
+      {
+        GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        int hmtSize = (int)(EditorGUIUtility.currentViewWidth - 100);
+        GUILayout.Label(hmTexture, GUILayout.Width(hmtSize), GUILayout.Height(hmtSize));
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        if(GUILayout.Button("Refresh", GUILayout.Width(hmtSize)))
+        {
+          float[,] heightMap = terrain.terrainData.GetHeights(0,0, terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight);
+          for(int y = 0; y < terrain.terrainData.heightmapHeight; y++)
+          {
+            for(int x = 0; x < terrain.terrainData.heightmapWidth; x++)
+            {
+              hmTexture.SetPixel(x, y, new Color(heightMap[x, y],
+                                                  heightMap[x,y],
+                                                  heightMap[x,y], 1));
+              if(heightMap[x,y] > HeightestPiontInTerrian)
+              {
+                HeightestPiontInTerrian = heightMap[x,y];
+              }
+            }
+          }
+          Debug.Log(HeightestPiontInTerrian);
+          hmTexture.Apply();
+        }
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
       }
       EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
       if(GUILayout.Button("Reset"))

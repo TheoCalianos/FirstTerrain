@@ -68,27 +68,27 @@ public class TextureCreatorWindow : EditorWindow
             if(seamlessToggle)
             {
               float u = (float)x / (float)w;
-              float v = (float)y/ (float)w;
-              float noise00 = Utils.fBM((x + perlinXscale) * perlinXscale,
-                                        (y+ perlinYscale) * perlinYscale,
+              float v = (float)y/ (float)h;
+              float noise00 = Utils.fBM((x + perlinOffsetX) * perlinXscale,
+                                        (y+ perlinOffsetY) * perlinYscale,
                                         perlinOctaves,
                                         perlinPersistance) * perlinHeightScale;
-              float noise01 = Utils.fBM((x + perlinXscale) * perlinXscale,
-                                        (y+ perlinYscale) * perlinYscale,
+              float noise01 = Utils.fBM((x + perlinOffsetX) * perlinXscale,
+                                        (y+ perlinOffsetY + h) * perlinYscale,
                                         perlinOctaves,
                                         perlinPersistance) * perlinHeightScale;
-              float noise10 = Utils.fBM((x + perlinXscale) * perlinXscale,
-                                        (y+ perlinYscale) * perlinYscale,
+              float noise10 = Utils.fBM((x + perlinOffsetX + w) * perlinXscale,
+                                        (y+ perlinOffsetY) * perlinYscale,
                                         perlinOctaves,
                                         perlinPersistance) * perlinHeightScale;
-              float noise11 = Utils.fBM((x + perlinXscale) * perlinXscale,
-                                        (y+ perlinYscale) * perlinYscale,
+              float noise11 = Utils.fBM((x + perlinOffsetX + w) * perlinXscale,
+                                        (y+ perlinOffsetY + h) * perlinYscale,
                                         perlinOctaves,
                                         perlinPersistance) * perlinHeightScale;
               float noiseTotal = u * v * noise00 +
-                                u * (1-v) * noise01 +
-                                (u-1) * v * noise10 +
-                                (u-1) * (1-v) * noise11;
+                                u * (1 - v) * noise01 +
+                                (1 - u) * v * noise10 +
+                                (1 - u) * (1 - v) * noise11;
               float value = (int)(256 * noiseTotal) + 50;
               float r = Mathf.Clamp((int) noise00,0,255);
               float g = Mathf.Clamp(value,0,255);
