@@ -38,9 +38,11 @@ public class CustomTerrainEditor : Editor
     SerializedProperty splatNoisescaler;
 
     float HeightestPiontInTerrian;
+    float LowestPointInTerrain;
 
     Texture2D hmTexture;
 
+    bool showVegetation = false;
     bool showHeights = false;
     bool showSplatMap = false;
     bool showSmooth = false;
@@ -57,6 +59,11 @@ public class CustomTerrainEditor : Editor
 
     GUITableState perlinParametersTable;
     SerializedProperty perlinParameters;
+
+    GUITableState vegetationTable;
+    SerializedProperty vegetation;
+    SerializedProperty maxTrees;
+    SerializedProperty treeSpacing;
     //fould outs -------
     void OnEnable()
     {
@@ -90,6 +97,10 @@ public class CustomTerrainEditor : Editor
       splatNoiseXscale = serializedObject.FindProperty("splatNoiseXscale");
       splatNoiseYscale = serializedObject.FindProperty("splatNoiseYscale");
       splatNoisescaler = serializedObject.FindProperty("splatNoisescaler");
+      vegetationTable = new GUITableState("vegetationTable");
+      vegetation = serializedObject.FindProperty("vegetation");
+      maxTrees = serializedObject.FindProperty("maxTrees");
+      treeSpacing = serializedObject.FindProperty("treeSpacing");
 
       hmTexture = new Texture2D(513, 513, TextureFormat.ARGB32, false);
 
@@ -209,6 +220,7 @@ public class CustomTerrainEditor : Editor
         GUILayout.Label("Splat Map", EditorStyles.boldLabel);
         GUILayout.Label("Max Height Of Terrain", EditorStyles.boldLabel);
         EditorGUILayout.FloatField(HeightestPiontInTerrian);
+        EditorGUILayout.FloatField(LowestPointInTerrain);
         EditorGUILayout.Slider(splatOffset , 0, .1f, new GUIContent("Offset"));
         EditorGUILayout.Slider(splatNoiseXscale , 0.001f, 1, new GUIContent("Noise X scale"));
         EditorGUILayout.Slider(splatNoiseYscale , 0.001f, 1, new GUIContent("Noise Y scale"));
@@ -229,6 +241,31 @@ public class CustomTerrainEditor : Editor
         if(GUILayout.Button("Apply Splatmaps"))
         {
           terrain.SplatMaps();
+        }
+      }
+      showVegetation = EditorGUILayout.Foldout(showVegetation, "Vegetation");
+      if(showVegetation)
+      {
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        GUILayout.Label("Vegetation", EditorStyles.boldLabel);
+        EditorGUILayout.IntSlider(maxTrees,0, 10000, new GUIContent("maximum Trees"));
+        EditorGUILayout.IntSlider(treeSpacing, 2, 20, new GUIContent("Trees Spacing"));
+        vegetationTable = GUITableLayout.DrawTable(vegetationTable, serializedObject.FindProperty("vegetation"));
+        //splatMapTable = GUITableLayout.DrawTable(splatMapTable, splatHeights);
+        GUILayout.Space(20);
+        EditorGUILayout.BeginHorizontal();
+        if(GUILayout.Button("+"))
+        {
+          terrain.AddNewVegetation();
+        }
+        if(GUILayout.Button("-"))
+        {
+          terrain.RemoveVegetations();
+        }
+        EditorGUILayout.EndHorizontal();
+        if(GUILayout.Button("Apply Vegetations"))
+        {
+          terrain.Vegetation();
         }
       }
       showHeights = EditorGUILayout.Foldout(showHeights, "Height Map");
@@ -256,9 +293,12 @@ public class CustomTerrainEditor : Editor
               {
                 HeightestPiontInTerrian = heightMap[x,y];
               }
+              if(heightMap[x,y] < LowestPointInTerrain)
+              {
+                LowestPointInTerrain = heightMap[x,y];
+              }
             }
           }
-          Debug.Log(HeightestPiontInTerrian);
           hmTexture.Apply();
         }
         GUILayout.FlexibleSpace();
