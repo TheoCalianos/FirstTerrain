@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 934238532}
   - component: {fileID: 934238531}
   - component: {fileID: 934238534}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Terrain
   m_TagString: Terrain
   m_Icon: {fileID: 0}
@@ -305,122 +305,71 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   randomHeightRange: {x: 0, y: 0.1}
-  heightMapImage: {fileID: 2800000, guid: b393aab29fccec04bba7ce0cdf7fb63f, type: 3}
-  heightMapScale: {x: 2, y: 0.3, z: 2}
-  perlinXScale: 0.002
-  perlinYScale: 0.003
-  perlinOffsetX: 6923
-  perlinOffsetY: 8200
+  heightMapImage: {fileID: 0}
+  heightMapScale: {x: 1, y: 1, z: 1}
+  perlinXScale: 0.01
+  perlinYScale: 0.01
+  perlinOffsetX: 0
+  perlinOffsetY: 0
   perlinOctaves: 3
-  perlinHeightScale: 0.106
-  perlinPersistance: 1.9
-  voronoifallOff: 9.94
-  voronoidropOff: 10
-  voronoimaxHeight: 0.321
-  voronoimaxWidth: 0.205
-  voronoipeakCount: 3
-  voronoiType: 3
-  midPointHeightMax: -1.5
-  midPointHeightMin: 1.5
+  perlinHeightScale: 0.09
+  perlinPersistance: 8
+  voronoifallOff: 0.2
+  voronoidropOff: 0.6
+  voronoimaxHeight: 0.1
+  voronoimaxWidth: 0.05
+  voronoipeakCount: 5
+  voronoiType: 4
+  midPointHeightMax: -2
+  midPointHeightMin: 2
   midPointDampener: 2
   midPointRoughness: 2
-  splatOffset: 0.0021
-  splatNoiseXscale: 0.32
-  splatNoiseYscale: 0.42
+  splatOffset: 0.1
+  splatNoiseXscale: 0.01
+  splatNoiseYscale: 0.01
   splatNoisescaler: 0.2
   vegetation:
-  - mesh: {fileID: -927199367670048503, guid: 2a44e858bd119bca11002b7b44295342, type: 3}
-    minHeight: 0.2
-    maxHeight: 1
-    minSlope: 0.6
-    maxSlope: 1
-    remove: 0
-  - mesh: {fileID: -927199367670048503, guid: 25fa881dbd110e38a00062d88f962b59, type: 3}
-    minHeight: 0
+  - mesh: {fileID: -927199367670048503, guid: 10337ad1bd11abca11002b7b44295342, type: 3}
+    minHeight: 0.1
     maxHeight: 0.2
     minSlope: 0
     maxSlope: 0.5
     remove: 0
-  maxTrees: 4485
-  treeSpacing: 16
+  - mesh: {fileID: 100000, guid: 02e48269f8d554fbca75435761452392, type: 3}
+    minHeight: 0.1
+    maxHeight: 0.2
+    minSlope: 0
+    maxSlope: 0.5
+    remove: 0
+  maxTrees: 5000
+  treeSpacing: 5
   splatHeights:
-  - texture: {fileID: 2800000, guid: 1368cbe84e5ef458787070c6ea7ae2ee, type: 3}
-    minHeight: 0.01
-    maxHeight: 0.15
+  - texture: {fileID: 0}
+    minHeight: 0.1
+    maxHeight: 0.2
     minSlope: 0
     maxSlope: 90
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 10, y: 10}
-    tsplatOffset: 0.001
-    tsplatNoiseXscale: 0.64
-    tsplatNoiseYscale: 0.84
-    tsplatNoisescaler: 0.2
+    tileSize: {x: 0, y: 0}
+    tsplatOffset: 0.01
+    tsplatNoiseXscale: 0.01
+    tsplatNoiseYscale: 0.01
+    tsplatNoisescaler: 0.01
     remove: 0
-  - texture: {fileID: 2800000, guid: de70d1ae446e84ee5aa2ea6a420781e8, type: 3}
-    minHeight: 0.35
-    maxHeight: 0.37
-    minSlope: 0
-    maxSlope: 90
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 10, y: 10}
-    tsplatOffset: 0.001
-    tsplatNoiseXscale: 0.4
-    tsplatNoiseYscale: 0.4
-    tsplatNoisescaler: 0.2
-    remove: 0
-  - texture: {fileID: 2800000, guid: bdbc0c13ea3694c3d85b040e23b65747, type: 3}
-    minHeight: 0
-    maxHeight: 0.000005
-    minSlope: 0
-    maxSlope: 50
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 10, y: 10}
-    tsplatOffset: 0.001
-    tsplatNoiseXscale: 0.32
-    tsplatNoiseYscale: 0.42
-    tsplatNoisescaler: 0.2
-    remove: 0
-  - texture: {fileID: 2800000, guid: c12fba8bcc2ef4b959d67f60ca59d886, type: 3}
-    minHeight: 0.19
-    maxHeight: 0.19
-    minSlope: 0
-    maxSlope: 90
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 10, y: 10}
-    tsplatOffset: 0.001
-    tsplatNoiseXscale: 0.32
-    tsplatNoiseYscale: 0.42
-    tsplatNoisescaler: 0.2
-    remove: 0
-  smoothCount: 10
+  smoothCount: 1
   perlinParameters:
   - mperlinXScale: 0.01
     mperlinYScale: 0.01
-    mperlinOctaves: 3
+    mperlinOctaves: 5
     mperlinHeightScale: 0.09
     mperlinPersistance: 8
     mperlinOffsetX: 0
     mperlinOffsetY: 0
     remove: 0
-  - mperlinXScale: 0.001
-    mperlinYScale: 0.001
-    mperlinOctaves: 3
-    mperlinHeightScale: 0.15
-    mperlinPersistance: 8
-    mperlinOffsetX: 0
-    mperlinOffsetY: 0
-    remove: 0
-  - mperlinXScale: 0.0005
-    mperlinYScale: 0.0005
-    mperlinOctaves: 3
-    mperlinHeightScale: 0.09
-    mperlinPersistance: 8
-    mperlinOffsetX: 0
-    mperlinOffsetY: 0
-    remove: 0
-  resetTerrain: 0
+  resetTerrain: 1
   terrain: {fileID: 934238532}
   terrainData: {fileID: 15600000, guid: 14ecf15eae706314bb6bf1fdccd71b2d, type: 2}
+  terrainLayer: 8
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
