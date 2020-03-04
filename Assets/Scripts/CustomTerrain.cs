@@ -47,10 +47,10 @@ public class CustomTerrain : MonoBehaviour
       public float minSlope = 0;
       public float maxSlope = 90f;
       public Vector2 tileOffset = new Vector2(0,0);
-      public Vector2 tileSize = new Vector2(0,0);
+      public Vector2 tileSize = new Vector2(10,10);
       public float tsplatOffset = 0.01f;
-      public float tsplatNoiseXscale =  0.01f;
-      public float tsplatNoiseYscale =  0.01f;
+      public float tsplatNoiseXscale =  0.032f;
+      public float tsplatNoiseYscale =  0.064f;
       public float tsplatNoisescaler = 0.01f;
       public bool remove = false;
     }
@@ -62,6 +62,14 @@ public class CustomTerrain : MonoBehaviour
       public float maxHeight = .2f;
       public float minSlope = 0f;
       public  float maxSlope = 1f;
+      public float minScale = .1f;
+      public float maxScale = 5f;
+      public Color color1 = Color.white;
+      public Color color2 = Color.white;
+      public Color lightColor = Color.white;
+      public float MinRoatation = 0;
+      public float MaxRoatation = 360;
+      public float density = 0.5f;
       public bool remove = false;
     }
     public List<VegetationParams> vegetation = new List<VegetationParams>()
@@ -154,7 +162,7 @@ public class CustomTerrain : MonoBehaviour
     public void RemoveVegetations()
     {
       List<VegetationParams> keptVegetationParams = new List<VegetationParams>();
-      for (int i = 0; i < splatHeights.Count; i++) {
+      for (int i = 0; i < vegetation.Count; i++) {
         if (!vegetation[i].remove)
         {
           keptVegetationParams.Add(vegetation[i]);
@@ -185,10 +193,15 @@ public class CustomTerrain : MonoBehaviour
         {
           for(int tp = 0; tp < terrainData.treePrototypes.Length; tp++)
           {
+            if(UnityEngine.Random.Range(0.0f, 1.0f) > vegetation[tp].density) break;
+
             float thisHeight = terrainData.GetHeight(x, z)/ terrainData.size.y;
             float thisHeightStart = vegetation[tp].minHeight;
             float thisHeightEnd = vegetation[tp].maxHeight;
-            if(thisHeight >= thisHeightStart && thisHeight <= thisHeightEnd)
+
+            float steepness = terrainData.GetSteepness(x/(float)terrainData.size.x, z / (float)terrainData.size.z);
+            if((thisHeight >= thisHeightStart && thisHeight <= thisHeightEnd) &&
+            (steepness >=vegetation[tp].minSlope && steepness <= vegetation[tp].maxSlope))
             {
               TreeInstance instance = new TreeInstance();
               instance.position = new Vector3((x+ UnityEngine.Random.Range(-5.0f,5.0f))/ terrainData.size.x, terrainData.GetHeight(x,z)/terrainData.size.y, (z+UnityEngine.Random.Range(-5.0f,5.0f)) / terrainData.size.z);
@@ -196,21 +209,26 @@ public class CustomTerrain : MonoBehaviour
                                                   instance.position.z * terrainData.size.z) + this.transform.position;
               RaycastHit hit;
               int layerMask = 1 << terrainLayer;
-              if(Physics.Raycast(treeWorldPos, -Vector3.up, out hit, 100, layerMask) ||
-                 Physics.Raycast(treeWorldPos, Vector3.up, out hit, 100, layerMask))
+              if(Physics.Raycast(treeWorldPos + new Vector3(0,10,0), -Vector3.up, out hit, 100, layerMask) ||
+                 Physics.Raycast(treeWorldPos - new Vector3(0,10,0), Vector3.up, out hit, 100, layerMask))
               {
                 float treeHeight = (hit.point.y - this.transform.position.y) / terrainData.size.y;
                 instance.position = new Vector3(instance.position.x,treeHeight, instance.position.z);
-                instance.rotation = UnityEngine.Random.Range(0,360);
+                instance.rotation = UnityEngine.Random.Range(vegetation[tp].MinRoatation,vegetation[tp].MaxRoatation);
                 instance.prototypeIndex = tp;
-                instance.color = Color.white;
-                instance.lightmapColor = Color.white;
-                instance.heightScale = .95f;
-                instance.widthScale = .95f;
+                instance.color = Color.Lerp(vegetation[tp].color1,
+                vegetation[tp].color2,
+                UnityEngine.Random.Range(0.0f,1.0f));
+                instance.lightmapColor = vegetation[tp].lightColor;
+                instance.heightScale = UnityEngine.Random.Range(vegetation[tp].minScale,vegetation[tp].maxScale);
+                instance.widthScale =  UnityEngine.Random.Range(vegetation[tp].minScale,vegetation[tp].maxScale);
 
                 allVegetation.Add(instance);
                 if (allVegetation.Count >= maxTrees) goto TREESDONE;
               }
+              instance.position = new Vector3(instance.position.x * terrainData.size.x/terrainData.alphamapWidth,
+                                instance.position.y,
+                                instance.position.z * terrainData.size.z/terrainData.alphamapHeight);
             }
           }
         }

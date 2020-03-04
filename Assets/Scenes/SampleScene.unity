@@ -305,8 +305,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   randomHeightRange: {x: 0, y: 0.1}
-  heightMapImage: {fileID: 0}
-  heightMapScale: {x: 1, y: 1, z: 1}
+  heightMapImage: {fileID: 2800000, guid: 8114c37af19015b4288a8e127117e2d9, type: 3}
+  heightMapScale: {x: 1, y: 0.5, z: 1}
   perlinXScale: 0.01
   perlinYScale: 0.01
   perlinOffsetX: 0
@@ -329,34 +329,86 @@ MonoBehaviour:
   splatNoiseYscale: 0.01
   splatNoisescaler: 0.2
   vegetation:
-  - mesh: {fileID: -927199367670048503, guid: 10337ad1bd11abca11002b7b44295342, type: 3}
+  - mesh: {fileID: -927199367670048503, guid: 2a44e858bd119bca11002b7b44295342, type: 3}
     minHeight: 0.1
-    maxHeight: 0.2
+    maxHeight: 0.4
     minSlope: 0
-    maxSlope: 0.5
+    maxSlope: 8
+    minScale: 0.5
+    maxScale: 5
+    color1: {r: 0.9607843, g: 0.03137252, b: 0.6649293, a: 0}
+    color2: {r: 0, g: 0.41863346, b: 1, a: 0}
+    lightColor: {r: 1, g: 0.8386418, b: 0, a: 1}
+    MinRoatation: 0
+    MaxRoatation: 360
+    density: 0.3
     remove: 0
   - mesh: {fileID: 100000, guid: 02e48269f8d554fbca75435761452392, type: 3}
-    minHeight: 0.1
-    maxHeight: 0.2
+    minHeight: 0
+    maxHeight: 0.12
     minSlope: 0
     maxSlope: 0.5
+    minScale: 0.5
+    maxScale: 2
+    color1: {r: 1, g: 1, b: 1, a: 0}
+    color2: {r: 0.9811321, g: 0.94809943, b: 0.28230685, a: 0}
+    lightColor: {r: 0.9803922, g: 0.9490197, b: 0.28235295, a: 1}
+    MinRoatation: 0
+    MaxRoatation: 360
+    density: 0.7
     remove: 0
   maxTrees: 5000
-  treeSpacing: 5
+  treeSpacing: 10
   splatHeights:
-  - texture: {fileID: 0}
+  - texture: {fileID: 2800000, guid: 89d7186bb29164a87905f17c084e4206, type: 3}
+    minHeight: 0
+    maxHeight: 0.1
+    minSlope: 0
+    maxSlope: 40
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}
+    tsplatOffset: 0.01
+    tsplatNoiseXscale: 0.032
+    tsplatNoiseYscale: 0.064
+    tsplatNoisescaler: 0.01
+    remove: 0
+  - texture: {fileID: 2800000, guid: dd49ed99f55924d13bacefd240626bc5, type: 3}
     minHeight: 0.1
-    maxHeight: 0.2
+    maxHeight: 0.3
     minSlope: 0
     maxSlope: 90
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 0, y: 0}
-    tsplatOffset: 0.01
-    tsplatNoiseXscale: 0.01
-    tsplatNoiseYscale: 0.01
-    tsplatNoisescaler: 0.01
+    tileSize: {x: 10, y: 10}
+    tsplatOffset: 0.1
+    tsplatNoiseXscale: 0.032
+    tsplatNoiseYscale: 0.064
+    tsplatNoisescaler: 0.2
     remove: 0
-  smoothCount: 1
+  - texture: {fileID: 2800000, guid: dc5e2701b82d34a9ab7da0717fe07076, type: 3}
+    minHeight: 0.3
+    maxHeight: 0.4
+    minSlope: 0
+    maxSlope: 90
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}
+    tsplatOffset: 0.1
+    tsplatNoiseXscale: 0.032
+    tsplatNoiseYscale: 0.064
+    tsplatNoisescaler: 0.2
+    remove: 0
+  - texture: {fileID: 2800000, guid: fa749c6a04ad34af5af35082813d7df8, type: 3}
+    minHeight: 0.4
+    maxHeight: 0.5
+    minSlope: 0
+    maxSlope: 90
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 10, y: 10}
+    tsplatOffset: 0.1
+    tsplatNoiseXscale: 0.032
+    tsplatNoiseYscale: 0.064
+    tsplatNoisescaler: 0.2
+    remove: 0
+  smoothCount: 10
   perlinParameters:
   - mperlinXScale: 0.01
     mperlinYScale: 0.01
