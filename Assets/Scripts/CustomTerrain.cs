@@ -98,6 +98,26 @@ public class CustomTerrain : MonoBehaviour
       public int mperlinOffsetY = 0;
       public bool remove = false;
     }
+    [System.Serializable]
+    public class Detail
+    {
+      public GameObject prototype = null;
+      public Texture2D prototypeTexture = null;
+      public float minHeight = 0.1f;
+      public float maxHeight = 0.2f;
+      public float minSlope = 0;
+      public float maxSlope = 1.0f;
+      public float overlap = 0.01f;
+      public float feather = 0.05f;
+      public float density = 0.5f;
+      public bool remove = false;
+    }
+    public List<Detail> details = new List<Detail>()
+    {
+      new Detail()
+    };
+    public int maxDetails = 5000;
+    public int detailsSpacing = 5;
     public List<PerlinParameters> perlinParameters = new List<PerlinParameters>()
     {
       new PerlinParameters()
@@ -136,6 +156,82 @@ public class CustomTerrain : MonoBehaviour
         }
       }
       return neighbours;
+    }
+    public void AddDetails()
+    {
+      DetailPrototype[] newDetailPrototypes;
+      newDetailPrototypes = new DetailPrototype[details.Count];
+      int dindex = 0;
+      foreach(Detail d in details)
+      {
+        newDetailPrototypes[dindex] = new DetailPrototype();
+        newDetailPrototypes[dindex].prototype = d.prototype;
+        newDetailPrototypes[dindex].prototypeTexture = d.prototypeTexture;
+        newDetailPrototypes[dindex].healthyColor = Color.white;
+        if(newDetailPrototypes[dindex].prototype)
+        {
+          newDetailPrototypes[dindex].usePrototypeMesh = true;
+          newDetailPrototypes[dindex].renderMode = DetailRenderMode.VertexLit;
+        }
+        else
+        {
+          newDetailPrototypes[dindex].usePrototypeMesh = false;
+          newDetailPrototypes[dindex].renderMode = DetailRenderMode.GrassBillboard;
+        }
+        dindex++;
+      }
+      terrainData.detailPrototypes = newDetailPrototypes;
+      float[,] heightMap = terrainData.GetHeights(0,0,
+                                                  terrainData.heightmapWidth,
+                                                  terrainData.heightmapHeight);
+
+      for (int i = 0; i < terrainData.detailPrototypes.Length; i++)
+      {
+        int[,] detailMap = new int[terrainData.detailWidth, terrainData.detailHeight];
+
+        for(int y = 0; y < terrainData.detailHeight; y += detailsSpacing)
+        {
+          for(int x = 0; x < terrainData.detailHeight; x += detailsSpacing)
+          {
+            if(UnityEngine.Random.Range(0.0f,1.0f) > details[i].density) continue;
+            int xHM = (int)(x/(float)terrainData.detailWidth * terrainData.heightmapWidth);
+            int yHM = (int)(y/(float)terrainData.detailHeight * terrainData.heightmapHeight);
+            float thisNoise = Utils.Map(Mathf.PerlinNoise(x*details[i].feather,
+                                                          y*details[i].feather),0,1,0.5f,1);
+            float thisHeightStart =  details[i].minHeight * thisNoise -
+                                      details[i].overlap * thisNoise;
+            float nextHeightStart =  details[i].maxHeight * thisNoise +
+                                      details[i].overlap * thisNoise;
+            float thisHeight = heightMap[yHM,xHM];
+            float steepness = terrainData.GetSteepness(xHM/ (float)terrainData.size.x,
+                                                      yHM/ (float)terrainData.size.z);
+            if((thisHeight >= thisHeightStart && thisHeight <= nextHeightStart) && (steepness >= details[i].minSlope && steepness <= details[i].maxSlope))
+            {
+              detailMap[y,x] = 1;
+            }
+          }
+        }
+        terrainData.SetDetailLayer(0,0, i, detailMap);
+      }
+    }
+    public void AddNewDetails()
+    {
+      details.Add(new Detail());
+    }
+    public void RemoveDetails()
+    {
+      List<Detail> keptDetails = new List<Detail>();
+      for (int i = 0; i < details.Count; i++) {
+        if (!details[i].remove)
+        {
+          keptDetails.Add(details[i]);
+        }
+      }
+      if (keptDetails.Count == 0)
+      {
+        keptDetails.Add(details[0]);
+      }
+      details = keptDetails;
     }
     float GetSteepness(float[,] heightmap, int x, int y, int width, int height)
     {

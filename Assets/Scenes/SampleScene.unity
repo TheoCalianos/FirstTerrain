@@ -255,7 +255,7 @@ Terrain:
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 80
+  m_DetailObjectDistance: 8217
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
@@ -409,6 +409,30 @@ MonoBehaviour:
     tsplatNoisescaler: 0.2
     remove: 0
   smoothCount: 10
+  details:
+  - prototype: {fileID: -927199367670048503, guid: 8e41f14c6552d48e6a7992aaecc808e4,
+      type: 3}
+    prototypeTexture: {fileID: 0}
+    minHeight: 0
+    maxHeight: 0.2
+    minSlope: 0
+    maxSlope: 0.4
+    overlap: 0.01
+    feather: 0.05
+    density: 0.05
+    remove: 0
+  - prototype: {fileID: 0}
+    prototypeTexture: {fileID: 2800000, guid: 8eecda2bcd110cb2a00086688f962b59, type: 3}
+    minHeight: 0
+    maxHeight: 0.4
+    minSlope: 0
+    maxSlope: 100
+    overlap: 0.01
+    feather: 0.05
+    density: 1
+    remove: 0
+  maxDetails: 8217
+  detailsSpacing: 4
   perlinParameters:
   - mperlinXScale: 0.01
     mperlinYScale: 0.01
