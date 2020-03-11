@@ -36,6 +36,9 @@ public class CustomTerrainEditor : Editor
     SerializedProperty splatNoiseXscale;
     SerializedProperty splatNoiseYscale;
     SerializedProperty splatNoisescaler;
+    SerializedProperty WaterHeight;
+    SerializedProperty waterGo;
+    SerializedProperty ShoreFoam;
 
     float HeightestPiontInTerrian;
     float LowestPointInTerrain;
@@ -52,6 +55,7 @@ public class CustomTerrainEditor : Editor
     bool showMultiplePerlins = false;
     bool showVoronoi = false;
     bool midPointShow = false;
+    bool showWater = false;
     bool showDetail =  false;
 
     float sHeightestPiontInTerrian;
@@ -112,6 +116,9 @@ public class CustomTerrainEditor : Editor
       details = serializedObject.FindProperty("details");
       maxDetails = serializedObject.FindProperty("maxDetails");
       detailsSpacing = serializedObject.FindProperty("detailsSpacing");
+      WaterHeight = serializedObject.FindProperty("WaterHeight");
+      waterGo = serializedObject.FindProperty("waterGo");
+      ShoreFoam = serializedObject.FindProperty("ShoreFoam");
 
       hmTexture = new Texture2D(513, 513, TextureFormat.ARGB32, false);
 
@@ -188,6 +195,26 @@ public class CustomTerrainEditor : Editor
         {
           terrain.MultiplePerlinTerrain();
         }
+      }
+      showWater = EditorGUILayout.Foldout(showWater, "showWater");
+      if(showWater)
+      {
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            GUILayout.Label("Water", EditorStyles.boldLabel);
+            EditorGUILayout.Slider(WaterHeight, 0, 1, new GUIContent("Water Height"));
+            EditorGUILayout.PropertyField(waterGo);
+            if(GUILayout.Button("Add Water"))
+
+            {
+              terrain.AddWater();
+            }
+            GUILayout.Label("Shore Line Material", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(ShoreFoam);
+            if(GUILayout.Button("Add Shoreline"))
+            {
+              terrain.AddShoreline();
+
+            }
       }
       showVoronoi = EditorGUILayout.Foldout(showVoronoi, "Voronoi");
       if(showVoronoi)

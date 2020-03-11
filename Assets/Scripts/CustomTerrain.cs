@@ -38,6 +38,10 @@ public class CustomTerrain : MonoBehaviour
     public float splatNoiseYscale = 0.01f;
     public float splatNoisescaler = 0.2f;
 
+    public float WaterHeight = 0.5f;
+    public GameObject waterGo;
+
+    public Material ShoreFoam;
     [System.Serializable]
     public class SplatHeights
     {
@@ -107,6 +111,11 @@ public class CustomTerrain : MonoBehaviour
       public float maxHeight = 0.2f;
       public float minSlope = 0;
       public float maxSlope = 1.0f;
+      public Color dryColor = Color.white;
+      public Color healthyColor = Color.white;
+      public Vector2 heightRange = new Vector2(1,1);
+      public Vector2 widthRange = new Vector2(1,1);
+      public float noiseSpread = 0.5f;
       public float overlap = 0.01f;
       public float feather = 0.05f;
       public float density = 0.5f;
@@ -157,6 +166,98 @@ public class CustomTerrain : MonoBehaviour
       }
       return neighbours;
     }
+    public void AddShoreline()
+    {
+      float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapWidth, terrainData.heightmapHeight);
+      int quadCount = 0;
+      //GameObject quads = new GameObject("QUADS");
+      Debug.Log(WaterHeight);
+      for(int y = 0; y < terrainData.heightmapHeight; y++)
+      {
+        for(int x = 0; x < terrainData.heightmapWidth; x++)
+        {
+          Vector2 thisLocation = new Vector2(x,y);
+          List<Vector2> neighbours = Getneighbours(thisLocation, terrainData.heightmapWidth,terrainData.heightmapHeight);
+          foreach(Vector2 n in neighbours)
+          {
+            if(heightMap[x, y] < WaterHeight && heightMap[(int)n.x, (int)n.y] > WaterHeight)
+            {
+              //if(quadCount < 1000)
+              //{
+                quadCount++;
+                GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                go.transform.localScale *= 20.0f;
+                go.transform.position = this.transform.position +
+                                      new Vector3(y / (float)terrainData.heightmapHeight
+                                                    * terrainData.size.z,
+                                                    WaterHeight * terrainData.size.y,
+                                                    x / (float)terrainData.heightmapWidth
+                                                        * terrainData.size.x);
+
+                go.transform.LookAt(new Vector3(n.y / (float)terrainData.heightmapHeight * terrainData.size.x,
+                                                WaterHeight * terrainData.size.y,
+                                                n.x / (float)terrainData.heightmapWidth * terrainData.size.z));
+                go.transform.Rotate(90, 0,0);
+
+                go.tag = "Shore";
+
+                //go.transform.parent = quads.transform;
+              //}
+            }
+          }
+        }
+      }
+      foreach(GameObject quad in GameObject.FindGameObjectsWithTag("Shore"))
+      {
+            DestroyImmediate(quad, true);
+      }
+      GameObject[] shoreQuads = GameObject.FindGameObjectsWithTag("Shore");
+      MeshFilter[] meshFilter = new MeshFilter[shoreQuads.Length];
+      for(int m = 0; m < shoreQuads.Length; m++)
+      {
+        meshFilter[m] = shoreQuads[m].GetComponent<MeshFilter>();
+      }
+      CombineInstance[] combine = new CombineInstance[meshFilter.Length];
+      int i =0;
+      while (i < meshFilter.Length)
+      {
+        combine[i].mesh = meshFilter[i].sharedMesh;
+        combine[i].transform = meshFilter[i].transform.localToWorldMatrix;
+        meshFilter[i].gameObject.active = false;
+        i++;
+      }
+      GameObject currentShoreLine = GameObject.Find("ShoreLine");
+      if(currentShoreLine)
+      {
+        DestroyImmediate(currentShoreLine);
+      }
+      GameObject shoreLine = new GameObject();
+      shoreLine.name = "Shoreline";
+      shoreLine.AddComponent<WaveAnimation>();
+      shoreLine.transform.position = this.transform.position;
+      shoreLine.transform.rotation = this.transform.rotation;
+      MeshFilter thisMF = shoreLine.AddComponent<MeshFilter>();
+      thisMF.mesh = new Mesh();
+      shoreLine.GetComponent<MeshFilter>().sharedMesh.CombineMeshes(combine);
+      MeshRenderer r = shoreLine.AddComponent<MeshRenderer>();
+      r.sharedMaterial = ShoreFoam;
+      for(int sQ = 0; sQ < shoreQuads.Length; sQ++)
+      {
+        DestroyImmediate(shoreQuads[sQ]);
+      }
+
+    }
+    public void AddWater()
+    {
+      GameObject water = GameObject.Find("water");
+      if(!water)
+      {
+        water = Instantiate(waterGo, this.transform.position, this.transform.rotation);
+        water.name = "water";
+      }
+      water.transform.position = this.transform.position + new Vector3(terrainData.size.x / 2, WaterHeight * terrainData.size.y, terrainData.size.z/2);
+      water.transform.localScale = new Vector3(terrainData.size.x, 1, terrainData.size.z);
+    }
     public void AddDetails()
     {
       DetailPrototype[] newDetailPrototypes;
@@ -167,6 +268,13 @@ public class CustomTerrain : MonoBehaviour
         newDetailPrototypes[dindex] = new DetailPrototype();
         newDetailPrototypes[dindex].prototype = d.prototype;
         newDetailPrototypes[dindex].prototypeTexture = d.prototypeTexture;
+        newDetailPrototypes[dindex].healthyColor = d.healthyColor;
+        newDetailPrototypes[dindex].dryColor = d.dryColor;
+        newDetailPrototypes[dindex].minHeight = d.heightRange.x;
+        newDetailPrototypes[dindex].maxHeight = d.heightRange.y;
+        newDetailPrototypes[dindex].minWidth = d.widthRange.x;
+        newDetailPrototypes[dindex].maxWidth = d.widthRange.y;
+        newDetailPrototypes[dindex].noiseSpread = d.noiseSpread;
         newDetailPrototypes[dindex].healthyColor = Color.white;
         if(newDetailPrototypes[dindex].prototype)
         {
@@ -761,6 +869,7 @@ public class CustomTerrain : MonoBehaviour
       }
       return -1;
     }
+
 
     // Start is called before the first frame update
     void Start()
